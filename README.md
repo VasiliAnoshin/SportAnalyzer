@@ -39,7 +39,20 @@ The Sport Analyzer API provides endpoints to retrieve information about sports g
   ```
 
 
-## run SportAnalyzer in virtual environment
+## Docker
+To run the Sport Analyzer API using Docker, follow these steps:
+### 1. Build the Docker image:
+
+        ```bash
+        docker build -t my-fastapi-app .
+        ```
+### 2. Run the Docker container:
+        ```bash
+        docker run -p 8008:8008 my-fastapi-app
+        ```
+Now, the API is accessible at http://localhost:8008. You can use the provided endpoints as described above.
+
+## Run SportAnalyzer in virtual environment
 
 - Create virtual env:
 
