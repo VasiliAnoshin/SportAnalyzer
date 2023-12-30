@@ -1,4 +1,27 @@
-#SportAnalyzer
+
+# Sport Analyzer API
+
+The Sport Analyzer API provides endpoints to retrieve information about sports games.
+
+## Endpoints
+
+### 1. List All Games
+
+- **Endpoint:** `/list_all_games`
+- **Method:** GET
+- **Description:** Retrieve a list of all available sports games.
+- **Example Request:**
+  ```bash
+  curl -X GET "http://localhost:8008/list_all_games"
+```
+- Example Response:
+```bash
+        {
+        "all_games": ["Volleyball", "Tennis", "Soccer", "Diagnostics", "EFootball", "TableTennis", "Basketball", "ESports", "Hockey", "Cricket", "Handball", "AmericanFootball", "Test"]
+        }
+```
+
+
 ## run SportAnalyzer in virtual environment
 
 - Create virtual env:
