@@ -22,6 +22,22 @@ The Sport Analyzer API provides endpoints to retrieve information about sports g
     }
   ```
 
+### 2. List Total Games by Sport
+- **Endpoint:** `/list_total_games_by_sport`
+- **Method:** GET
+- **Description:** Get the total number of games for a specific sport.
+- **Parameters:**:
+        - sport (query parameter): Filter games by sport.
+- **Example Request:** 
+  ```bash
+  curl -X GET "http://localhost:8008/list_total_games_by_sport?sport=Tennis"
+  ```
+
+- **Example Responce:**
+  ```bash
+    {"Tennis": 150 }
+  ```
+
 
 ## run SportAnalyzer in virtual environment
 
