@@ -23,6 +23,18 @@ class DataProcessor:
         return unique_sports
 
     def get_games_count_per_sport(self, sport:str) ->dict:
+        """
+        Count the number of games associated with a specific sport in the DataFrame.
+        
+        Args:
+        - sport (str): The sport for which to count the number of games.
+        
+        Returns:
+        - int: The count of games associated with the specified sport.
+        
+        Raises:
+        - KeyError: If there are no games associated with the specified sport.
+        """
         try:
             count = 0
             for game_entry in self.games_df["key"]:
