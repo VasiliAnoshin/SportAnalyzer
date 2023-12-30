@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Query
+from fastapi import FastAPI, Query, HTTPException
 import sys
 from pathlib import Path
 from dotenv import load_dotenv
@@ -36,6 +36,8 @@ def list_of_all_games():
         all_games_df = DataLoader(DATA_FILE).load()
         list_of_games = DataProcessor(all_games_df).get_list_of_games()
         return {"all_games": list(list_of_games)}
+    except Exception as ex:
+        raise HTTPException(status_code=500, detail=str(ex))
     finally:
         end_time = time.time()  # Record the end time
         execution_time = end_time - start_time
@@ -46,10 +48,12 @@ def get_games_count_per_sport(sport: str = Query(None, description="Filter games
     start_time = time.time() #Record the start time
     try:
         all_games_df = DataLoader(DATA_FILE).load()
-        games_to_total = DataProcessor(all_games_df).get_games_count_per_sport()
-        if sport not in games_to_total:
-            raise KeyError("There is no such sport in the list")
-        return {sport: games_to_total[sport]}
+        games_total = DataProcessor(all_games_df).get_games_count_per_sport(sport)
+        return {sport: games_total}
+    except KeyError as ex:
+        raise HTTPException(status_code=404, detail=str(ex))
+    except Exception as ex:
+        raise HTTPException(status_code=500, detail=str(ex))
     finally:
         end_time = time.time()  # Record the end time
         execution_time = end_time - start_time
