@@ -1,5 +1,5 @@
 #SportAnalyzer
-## run alpha_back in virtual environment
+## run SportAnalyzer in virtual environment
 
 - Create virtual env:
 
