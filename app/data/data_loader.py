@@ -30,7 +30,6 @@ class DataLoader:
         - Exception: If the file does not exist.
         """
         file_path = self.get_file_path(self.file_name)
-        # Load data during server initialization
         if os.path.exists(file_path):
             data_file_path = file_path
             games_data = pd.read_parquet(data_file_path)

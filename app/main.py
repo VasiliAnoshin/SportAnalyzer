@@ -1,12 +1,11 @@
 from fastapi import FastAPI, Query
-import os
 import sys
 from pathlib import Path
 from dotenv import load_dotenv
 sys.path.append(Path(__file__).parents[1].as_posix())
 from app.data.data_loader import DataLoader
+from app.data.data_processor import DataProcessor
 import redis
-import pandas as pd
 load_dotenv()
 import time
 
@@ -35,20 +34,26 @@ def list_of_all_games():
     start_time = time.time() #Record the start time
     try:
         all_games_df = DataLoader(DATA_FILE).load()
-        output = set()
-        for game in all_games_df["key"]:
-            res = game.partition("/")[0]
-            if res not in output and res != "":
-                output.add(res)
-        return {"all_games": list(output)}
+        list_of_games = DataProcessor(all_games_df).get_list_of_games()
+        return {"all_games": list(list_of_games)}
     finally:
         end_time = time.time()  # Record the end time
         execution_time = end_time - start_time
         print(f"Execution time: {execution_time} seconds")
 
-@app.get("/list_games_by_sport")
+@app.get("/list_total_games_by_sport")
 def get_games_count_per_sport(sport: str = Query(None, description="Filter games by sport")):
-    ...
+    start_time = time.time() #Record the start time
+    try:
+        all_games_df = DataLoader(DATA_FILE).load()
+        games_to_total = DataProcessor(all_games_df).get_games_count_per_sport()
+        if sport not in games_to_total:
+            raise KeyError("There is no such sport in the list")
+        return {sport: games_to_total[sport]}
+    finally:
+        end_time = time.time()  # Record the end time
+        execution_time = end_time - start_time
+        print(f"Execution time: {execution_time} seconds")
 
 @app.get("/get_representative_data")
 def get_representative_data(sportName:str, frameCount:int, fixturesCount:int):
