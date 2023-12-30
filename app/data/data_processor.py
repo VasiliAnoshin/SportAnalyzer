@@ -13,15 +13,14 @@ class DataProcessor:
         - list: A list containing unique sports extracted from the "key" column.
 
         Example:
-        >>> print(sports_list)
-        ['Volleyball', 'Tennis', 'Soccer', ...]
+            ['Volleyball', 'Tennis', 'Soccer', ...]
         """
-        output = set()
-        for game in self.games_df["key"]:
-            res = game.partition("/")[0]
-            if res not in output and res != "":
-                output.add(res)
-        return output
+        unique_sports = set()
+        for game_entry in self.games_df["key"]:
+            title  = game_entry.partition("/")[0]
+            if title and title not in unique_sports:
+                unique_sports.add(title)
+        return unique_sports
 
     def get_games_count_per_sport(self, sport:str) ->dict:
         try:
@@ -39,6 +38,3 @@ class DataProcessor:
         except IndexError as e:
             print(f"Can't split input_data entry, partition returns fewer than 3 parts: {e}")
             raise
-
-    def _contain_sport(self, sport)-> bool:
-        return sport in self.get_list_of_games()
