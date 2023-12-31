@@ -6,7 +6,6 @@ sys.path.append(Path(__file__).parents[1].as_posix())
 from app.data.data_loader import DataLoader
 from app.data.data_processor import DataProcessor
 from functools import wraps
-# import redis
 load_dotenv()
 import time
 
@@ -63,5 +62,8 @@ def get_games_count_per_sport(sport: str = Query(None, description="Filter games
     return {sport: games_total}
 
 @app.get("/get_representative_data")
+@calculate_execution_time
 def get_representative_data(sportName:str, frameCount:int, fixturesCount:int):
-    ...
+    all_games_df = DataLoader(DATA_FILE).load()
+    repr_data = DataProcessor(all_games_df).get_representative_data(sportName, frameCount, fixturesCount)
+    return {sportName: repr_data}

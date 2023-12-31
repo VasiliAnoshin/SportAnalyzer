@@ -1,5 +1,6 @@
 import pandas as pd
 from collections import defaultdict
+import numpy as np
 
 class DataProcessor:
     def __init__(self, all_games_df:pd.DataFrame) -> None:
@@ -50,3 +51,39 @@ class DataProcessor:
         except IndexError as e:
             print(f"Can't split input_data entry, partition returns fewer than 3 parts: {e}")
             raise
+
+    def get_representative_data(self, sport_name: str, frame_count: int, fixtures_count: int) -> list[str]:
+        """
+        Get a representative dataset for a specific sport.
+
+        Args:
+        - df (pd.DataFrame): The DataFrame containing the original dataset.
+        - sport_name (str): The name of the sport for which to fetch the dataset.
+        - frame_count (int): The number of frames.
+        - fixtures_count (int): The number of random games to consider.
+
+        Returns:
+        - list[str]: A list of keys representing the representative dataset.
+
+        Raises:
+        - ValueError: If the specified sport is not present in the DataFrame.
+
+        Example:
+        >>> df = pd.read_csv("your_dataset.csv")
+        >>> get_representative_data(df, "Soccer", 100, 200)
+        ['Soccer/204/123/Frames/123_20230101.png', 'Soccer/204/456/Frames/456_20230102.png', ...]
+        """
+        try:
+            if frame_count > fixtures_count:
+                raise ValueError('Frame count cant be > fixtures_count')
+            filtered_set = set()
+            for game_entry in self.games_df["key"]:
+                game = game_entry.partition("/")[0]
+                if game and game == sport_name:
+                    filtered_set.add(game_entry)
+            # Fetch random fixtures
+            random_fixtures = np.random.choice(list(filtered_set), size=min(fixtures_count, len(filtered_set)), replace=False)
+            random_frames = np.random.choice(random_fixtures, size=len(random_fixtures), replace=False)
+            return list(random_frames)
+        except Exception as ex:
+            raise ex
