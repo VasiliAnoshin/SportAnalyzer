@@ -16,18 +16,6 @@ DATA_FILE = "inventory_lsports-dev_full_14_03_2023_sample1M.parquet"
 def read_root():
     return {"Hello": "World"}
 
-# # Save data to Redis during startup
-# @app.on_event("startup")
-# async def startup_event():
-#     try:
-#         app.state.redis_client = redis.StrictRedis(host="localhost", port=6379)
-#         if not app.state.redis_client.exists("games"):
-#             all_games_df = DataLoader(DATA_FILE).load()
-#             print(all_games_df)
-#             app.state.redis_client.set("games", all_games_df.to_json(orient='records'))
-#             print("Data saved in Redis db successfully.")
-#     except Exception as ex:
-#         print(f"Error saving to Redis: {ex}")
 
 def calculate_execution_time(func):
     @wraps(func)
@@ -57,13 +45,42 @@ def list_of_all_games():
 @app.get("/list_total_games_by_sport")
 @calculate_execution_time
 def get_games_count_per_sport(sport: str = Query(None, description="Filter games by sport")):
+    """
+    Get the total number of games for the specified sport.
+
+    Parameters:
+    - sport (str): The sport name to filter games. If not provided, returns the total number of games for all sports.
+
+    Returns:
+    - Dict: A dictionary containing the sport name (or 'all_sports') and the total number of games.
+
+    Raises:
+    - HTTPException: If there is an error processing the request.
+    """
     all_games_df = DataLoader(DATA_FILE).load()
     games_total = DataProcessor(all_games_df).get_games_count_per_sport(sport)
     return {sport: games_total}
 
 @app.get("/get_representative_data")
 @calculate_execution_time
-def get_representative_data(sportName:str, frameCount:int, fixturesCount:int):
+def get_representative_data(
+    sportName: str = Query(..., description="Name of the sport"),
+    frameCount: int = Query(..., description="Number of frames to fetch for each fixture"), 
+    fixturesCount: int = Query(..., description="Number of fixtures to select")):
+    """
+    Get a representative dataset for the specified sport.
+
+    Parameters:
+    - sportName (str): Name of the sport.
+    - frameCount (int): Number of frames to fetch for each selected fixture.
+    - fixturesCount (int): Number of fixtures to randomly select.
+
+    Returns:
+    - Dict: A dictionary containing the sport name and a list of representative frames.
+
+    Raises:
+    - HTTPException: If there is an error processing the request.
+    """
     all_games_df = DataLoader(DATA_FILE).load()
     repr_data = DataProcessor(all_games_df).get_representative_data(sportName, frameCount, fixturesCount)
     return {sportName: repr_data}
