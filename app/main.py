@@ -37,6 +37,33 @@ def calculate_execution_time(func):
 @app.get("/list_all_games")
 @calculate_execution_time
 def list_of_all_games():
+    """
+    Get the list of all unique sports available in the dataset.
+
+    Returns:
+    - Dict: A dictionary containing the key "all_games" and a list of all unique sports.
+
+    Raises:
+    - HTTPException: If there is an error processing the request.
+
+    Example:
+    ```python
+    # Request example
+    curl -X 'GET' \
+      'http://localhost:8008/list_all_games' \
+      -H 'accept: application/json'
+
+    # Response example
+    {
+      "all_games": [
+        "Volleyball",
+        "Tennis",
+        "Soccer",
+        ...
+      ]
+    }
+    ```
+    """
     all_games_df = DataLoader(DATA_FILE).load()
     list_of_games = DataProcessor(all_games_df).get_list_of_games()
     return {"all_games": list(list_of_games)}
